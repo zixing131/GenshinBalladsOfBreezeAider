@@ -516,11 +516,11 @@ namespace GenshinBalladsOfBreezeAider
                 }
             }
             if (getReady)
-            {  
+            {
                 if (isPressed)
                 {
                     //已经按下
-                    if (color.R < 100 && color.G < 100 && color.B < 100)
+                    if (color.R < 80 && color.G < 80 && color.B < 80)
                     {
                         isPressed = false;
                         byte byteKey = (byte)key;
@@ -537,7 +537,8 @@ namespace GenshinBalladsOfBreezeAider
                 }
                 //118,139,231
                 //没按下的如果颜色符合，这个时候按下
-                else if (isPressed == false && color.R > 100 && color.R < 140 && color.G > 110 && color.G < 160 && color.B > 220 && color.B < 255)
+                else if (isPressed == false && color.R > 120 && color.R < 160 && color.G > 120 && color.G < 160 && color.B > 120 && color.B < 160)
+                //else if (isPressed == false && color.R > 100 && color.R < 140 && color.G > 110 && color.G < 160 && color.B > 220 && color.B < 255)
                 {
                     isPressed = true;
                     byte byteKey = (byte)key;
@@ -549,7 +550,7 @@ namespace GenshinBalladsOfBreezeAider
                         Invoke(new Action(() => debugTextBox.AppendText($"第{i++}次按下按键，长按按下,坐标位{x},{y}, 键为:{((Keys)key).ToString()} ----{DateTime.Now}\r\n")));
                     }
                     return DateTime.Now.AddMilliseconds(100);
-                }  
+                }
             }
             return DateTime.Now;
         }
