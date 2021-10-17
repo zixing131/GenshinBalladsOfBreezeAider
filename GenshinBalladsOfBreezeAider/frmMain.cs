@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Management;
@@ -207,6 +207,7 @@ namespace GenshinBalladsOfBreezeAider
                 float dpiY = DpiScaleY;
 
                 Dictionary<Keys, DateTime> dicKeysNextPressTime = new Dictionary<Keys, DateTime>();
+                Dictionary<Keys, DateTime> dicKeysNextPressTimeLong = new Dictionary<Keys, DateTime>();
 
                 int width = (int)Math.Round(Screen.PrimaryScreen.Bounds.Width * dpiX);
                 int height = (int)Math.Round(Screen.PrimaryScreen.Bounds.Height * dpiY);
@@ -218,6 +219,10 @@ namespace GenshinBalladsOfBreezeAider
                     Graphics memoryGraphics = Graphics.FromImage(memoryImage);
                     memoryGraphics.CopyFromScreen(0, 0, 0, 0, s);
 
+
+                    double xs = 0.0381249d;
+                    double ys = 0.0677083d;
+                    //以下是短按的
                     StartAutoPressKeyAndRecordCD(dicKeysNextPressTime, memoryImage, 0.253125, 0.37685, Keys.W);
                     StartAutoPressKeyAndRecordCD(dicKeysNextPressTime, memoryImage, 0.253125, 0.823148, Keys.S);
                     StartAutoPressKeyAndRecordCD(dicKeysNextPressTime, memoryImage, 0.127083, 0.6, Keys.A);
@@ -227,6 +232,17 @@ namespace GenshinBalladsOfBreezeAider
                     StartAutoPressKeyAndRecordCD(dicKeysNextPressTime, memoryImage, 0.62135416, 0.6, Keys.J);
                     StartAutoPressKeyAndRecordCD(dicKeysNextPressTime, memoryImage, 0.872917, 0.6, Keys.L);
 
+
+                    //以下是长按的
+                    StartAutoPressKeyAndRecordLong(dicKeysNextPressTimeLong, memoryImage, 0.253125, 0.37685, Keys.W);
+                    StartAutoPressKeyAndRecordLong(dicKeysNextPressTimeLong, memoryImage, 0.253125, 0.823148 - ys * 2, Keys.S);
+                    StartAutoPressKeyAndRecordLong(dicKeysNextPressTimeLong, memoryImage, 0.127083+ xs, 0.6  - ys, Keys.A);
+                    StartAutoPressKeyAndRecordLong(dicKeysNextPressTimeLong, memoryImage, 0.378125- xs, 0.6- ys, Keys.D);
+                    StartAutoPressKeyAndRecordLong(dicKeysNextPressTimeLong, memoryImage, 0.74739583, 0.37685, Keys.I);
+                    StartAutoPressKeyAndRecordLong(dicKeysNextPressTimeLong, memoryImage, 0.74739583, 0.823148 - ys * 2, Keys.K);
+                    StartAutoPressKeyAndRecordLong(dicKeysNextPressTimeLong, memoryImage, 0.62135416+ xs, 0.6- ys, Keys.J);
+                    StartAutoPressKeyAndRecordLong(dicKeysNextPressTimeLong, memoryImage, 0.872917- xs, 0.6- ys, Keys.L);
+                    
                     memoryGraphics.Dispose();
                     memoryImage.Dispose();
                 }
@@ -234,7 +250,8 @@ namespace GenshinBalladsOfBreezeAider
         }
 
         bool wReady, sReady, aReady, dReady, iReady, kReady, jReady, lReady;
-
+        bool wisPressed, sisPressed, aisPressed, disPressed, iisPressed, kisPressed, jisPressed, lisPressed;
+         
         private void btnDebugScreenshot_Click(object sender, EventArgs e) => SaveDebugImage();
 
         private void StartAutoPressKeyAndRecordCD(Dictionary<Keys, DateTime> dicKeysNextPressTime, Bitmap bmp, double scaleX, double scaleY, Keys key)
@@ -251,6 +268,22 @@ namespace GenshinBalladsOfBreezeAider
                 dicKeysNextPressTime.Add(key, StartAutoPressKey(bmp, scaleX, scaleY, key));
             }
         }
+
+        private void StartAutoPressKeyAndRecordLong(Dictionary<Keys, DateTime> dicKeysNextPressTime, Bitmap bmp, double scaleX, double scaleY, Keys key)
+        {
+            if (dicKeysNextPressTime.ContainsKey(key))
+            {
+                if (dicKeysNextPressTime[key] < DateTime.Now)
+                {
+                    dicKeysNextPressTime[key] = StartAutoPressKeyLong(bmp, scaleX, scaleY, key);
+                }
+            }
+            else
+            {
+                dicKeysNextPressTime.Add(key, StartAutoPressKeyLong(bmp, scaleX, scaleY, key));
+            }
+        }
+
 
         private void SaveDebugImage()
         {
@@ -274,6 +307,30 @@ namespace GenshinBalladsOfBreezeAider
             DrawDebugLine(0.872917, 0.6, memoryImage);
 
             memoryImage.Save(Application.StartupPath + @"\text.jpg");
+        }
+
+        private void SaveDebugImagebk()
+        {
+            float dpiX = DpiScaleX;
+            float dpiY = DpiScaleY;
+
+            int width = (int)Math.Round(Screen.PrimaryScreen.Bounds.Width * dpiX);
+            int height = (int)Math.Round(Screen.PrimaryScreen.Bounds.Height * dpiY);
+            Size s = new Size(width, height);
+            Bitmap memoryImage = new Bitmap(width, height);
+            Graphics memoryGraphics = Graphics.FromImage(memoryImage);
+            memoryGraphics.CopyFromScreen(0, 0, 0, 0, s);
+
+            DrawDebugLine(0.253125, 0.37685, memoryImage);
+            DrawDebugLine(0.253125, 0.823148, memoryImage);
+            DrawDebugLine(0.127083, 0.6, memoryImage);
+            DrawDebugLine(0.378125, 0.6, memoryImage);
+            DrawDebugLine(0.74739583, 0.37685, memoryImage);
+            DrawDebugLine(0.74739583, 0.823148, memoryImage);
+            DrawDebugLine(0.62135416, 0.6, memoryImage);
+            DrawDebugLine(0.872917, 0.6, memoryImage);
+
+            memoryImage.Save(Application.StartupPath + @"\textbk.jpg");
         }
 
         private void DrawDebugLine(double scaleX, double scaleY, Bitmap highDpiScreenshot)
@@ -305,7 +362,6 @@ namespace GenshinBalladsOfBreezeAider
                 Keys.L => lReady,
                 _ => throw new Exception()
             };
-
             int x = (int)Math.Round(genshinWindowWdith * scaleX) + genshinWindowX;
             int y = (int)Math.Round(genshinWindowHeight * scaleY) + genshinWindowY;
             nextEnablePressTime = PressKey(ref getReady, bmp, x, y, key);
@@ -336,9 +392,100 @@ namespace GenshinBalladsOfBreezeAider
                 case Keys.L:
                     lReady = getReady;
                     break;
+            }  
+            return nextEnablePressTime;
+        }
+
+
+        private DateTime StartAutoPressKeyLong(Bitmap bmp, double scaleX, double scaleY, Keys key)
+        {
+            DateTime nextEnablePressTime;
+            bool getReady = key switch
+            {
+                Keys.W => wReady,
+                Keys.S => sReady,
+                Keys.A => aReady,
+                Keys.D => dReady,
+                Keys.I => iReady,
+                Keys.K => kReady,
+                Keys.J => jReady,
+                Keys.L => lReady,
+                _ => throw new Exception()
+            };
+            //是否按下
+            bool isPressed = key switch
+            {
+                Keys.W => wisPressed,
+                Keys.S => sisPressed,
+                Keys.A => aisPressed,
+                Keys.D => disPressed,
+                Keys.I => iisPressed,
+                Keys.K => kisPressed,
+                Keys.J => jisPressed,
+                Keys.L => lisPressed,
+                _ => throw new Exception()
+            };
+
+            int x = (int)Math.Round(genshinWindowWdith * scaleX) + genshinWindowX;
+            int y = (int)Math.Round(genshinWindowHeight * scaleY) + genshinWindowY;
+            nextEnablePressTime = PressKeyLong(ref getReady, ref isPressed, bmp, x, y, key);
+            switch (key)
+            {
+                case Keys.W:
+                    wReady = getReady;
+                    break;
+                case Keys.S:
+                    sReady = getReady;
+                    break;
+                case Keys.A:
+                    aReady = getReady;
+                    break;
+                case Keys.D:
+                    dReady = getReady;
+                    break;
+                case Keys.I:
+                    iReady = getReady;
+                    break;
+                case Keys.K:
+                    kReady = getReady;
+                    break;
+                case Keys.J:
+                    jReady = getReady;
+                    break;
+                case Keys.L:
+                    lReady = getReady;
+                    break;
+            }
+            switch (key)
+            {
+                case Keys.W:
+                    wisPressed = isPressed;
+                    break;
+                case Keys.S:
+                    sisPressed = isPressed;
+                    break;
+                case Keys.A:
+                    aisPressed = isPressed;
+                    break;
+                case Keys.D:
+                    disPressed = isPressed;
+                    break;
+                case Keys.I:
+                    iisPressed = isPressed;
+                    break;
+                case Keys.K:
+                    kisPressed = isPressed;
+                    break;
+                case Keys.J:
+                    jisPressed = isPressed;
+                    break;
+                case Keys.L:
+                    lisPressed = isPressed;
+                    break;
             }
             return nextEnablePressTime;
         }
+
 
         private byte GetScancode(Keys key) => key switch
         {
@@ -355,9 +502,63 @@ namespace GenshinBalladsOfBreezeAider
 
         int i = 1;
 
-        private DateTime PressKey(ref bool getReady, Bitmap bmp, int x, int y, Keys key)
+        
+
+        private DateTime PressKeyLong(ref bool getReady,ref bool isPressed, Bitmap bmp, int x, int y, Keys key)
         {
             Color color = bmp.GetPixel(x, y);
+
+            if (!getReady)
+            {
+                if (color.R < 100 && color.G < 100 && color.B < 100)
+                {
+                    getReady = true;
+                }
+            }
+            if (getReady)
+            {  
+                if (isPressed)
+                {
+                    //已经按下
+                    if (color.R < 100 && color.G < 100 && color.B < 100)
+                    {
+                        isPressed = false;
+                        byte byteKey = (byte)key;
+                        //getReady = false; 
+                        byte code = GetScancode(key);
+                        keybd_event(byteKey, code, 2, 0);
+                        if (debugTextBox.Visible)
+                        {
+                            Invoke(new Action(() => debugTextBox.AppendText($"第{i++}次按下按键，长按放开,坐标位{x},{y}, 键为:{((Keys)key).ToString()} ----{DateTime.Now}\r\n")));
+                        }
+                        return DateTime.Now.AddMilliseconds(100);
+                    }
+                    return DateTime.Now;
+                }
+                //118,139,231
+                //没按下的如果颜色符合，这个时候按下
+                else if (isPressed == false && color.R > 100 && color.R < 140 && color.G > 110 && color.G < 160 && color.B > 220 && color.B < 255)
+                {
+                    isPressed = true;
+                    byte byteKey = (byte)key;
+                    //getReady = false; 
+                    byte code = GetScancode(key);
+                    keybd_event(byteKey, code, 0, 0);
+                    if (debugTextBox.Visible)
+                    {
+                        Invoke(new Action(() => debugTextBox.AppendText($"第{i++}次按下按键，长按按下,坐标位{x},{y}, 键为:{((Keys)key).ToString()} ----{DateTime.Now}\r\n")));
+                    }
+                    return DateTime.Now.AddMilliseconds(100);
+                }  
+            }
+            return DateTime.Now;
+        }
+        //124,138,255 //长按标记开始的颜色
+
+        private DateTime PressKey(ref bool getReady , Bitmap bmp, int x, int y, Keys key)
+        {
+            Color color = bmp.GetPixel(x, y);
+          
             if (!getReady)
             {
                 if (color.R < 100 && color.G < 100 && color.B < 100)
@@ -375,14 +576,14 @@ namespace GenshinBalladsOfBreezeAider
                     keybd_event(byteKey, code, 0, 0);
                     if (debugTextBox.Visible)
                     {
-                        Invoke(new Action(() => debugTextBox.AppendText($"第{i++}次按下按键, 键为:{((Keys)key).ToString()} ----{DateTime.Now}\r\n")));
+                        Invoke(new Action(() => debugTextBox.AppendText($"第{i++}次按下按键,坐标位{x},{y}, 键为:{((Keys)key).ToString()} ----{DateTime.Now}\r\n")));
                     }
                     Task.Delay(50).ContinueWith(_ =>
                     {
                         keybd_event(byteKey, code, 2, 0);
                     });
                     return DateTime.Now.AddMilliseconds(100);
-                }
+                }  
             }
             return DateTime.Now;
         }
