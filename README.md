@@ -1,3 +1,9 @@
+
+
+2021 10 17加入了长按功能，支持 镜花听世 活动
+
+
+以下是原项目readme
 # GenshinBalladsOfBreezeAider
 
 ## 活动已结束, 归档项目
