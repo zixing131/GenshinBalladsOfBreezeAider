@@ -537,7 +537,7 @@ namespace GenshinBalladsOfBreezeAider
                 }
                 //118,139,231
                 //没按下的如果颜色符合，这个时候按下
-                else if (isPressed == false && color.R > 120 && color.R < 160 && color.G > 120 && color.G < 160 && color.B > 120 && color.B < 160)
+                else if (isPressed == false && color.R > 140 && color.R < 160 && color.G > 140 && color.G < 160 && color.B > 140 && color.B < 160)
                 //else if (isPressed == false && color.R > 100 && color.R < 140 && color.G > 110 && color.G < 160 && color.B > 220 && color.B < 255)
                 {
                     isPressed = true;
@@ -569,7 +569,7 @@ namespace GenshinBalladsOfBreezeAider
             }
             if (getReady)
             {
-                if (color.R > 230 && color.G > 210 && color.G < 240 && color.B > 40 && color.B < 120)
+                if (color.R > 240 && color.G > 210 && color.G < 240 && ((color.B > 50 && color.B < 80) || (color.B > 120 && color.B < 200)))
                 {
                     byte byteKey = (byte)key;
                     //getReady = false;  //连击不会显示黑色圈导致判定有问题, 现只用作判断是否开始音游
