@@ -569,7 +569,7 @@ namespace GenshinBalladsOfBreezeAider
             }
             if (getReady)
             {
-                if (color.R > 240 && color.G > 210 && color.G < 240 && color.B > 50 && color.B < 80)
+                if (color.R > 230 && color.G > 210 && color.G < 240 && color.B > 40 && color.B < 120)
                 {
                     byte byteKey = (byte)key;
                     //getReady = false;  //连击不会显示黑色圈导致判定有问题, 现只用作判断是否开始音游
